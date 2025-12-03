@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biefstukavond Countdown</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #2c1810 0%, #4a2c2a 50%, #1a0f0a 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #f5e6d3;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+            color: #ffd700;
+        }
+
+        .answer {
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            font-weight: bold;
+        }
+
+        .answer.yes {
+            color: #4ade80;
+            animation: pulse 1s ease-in-out infinite;
+        }
+
+        .answer.no {
+            color: #ef4444;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .countdown-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px 30px;
+            min-width: 120px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .countdown-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .countdown-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 10px;
+            opacity: 0.8;
+        }
+
+        .celebration {
+            font-size: 4rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .answer {
+                font-size: 1.5rem;
+            }
+
+            .countdown-item {
+                min-width: 80px;
+                padding: 15px 20px;
+            }
+
+            .countdown-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Is het al biefstukavond?</h1>
+        <div id="answer" class="answer"></div>
+        <div id="countdown" class="countdown"></div>
+        <div id="celebration" class="celebration"></div>
+    </div>
+
+    <script>
+        // Get the next occurrence of December 19th at 5 PM (17:00)
+        function getNextBiefstukavond() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            
+            // Try December 19th of current year
+            let targetDate = new Date(currentYear, 11, 19, 17, 0, 0);
+            
+            // If we've passed that date, use next year
+            if (now > targetDate) {
+                targetDate = new Date(currentYear + 1, 11, 19, 17, 0, 0);
+            }
+            
+            return targetDate;
+        }
+
+        const targetDate = getNextBiefstukavond();
+
+        function createCountdownItem(value, label) {
+            const item = document.createElement('div');
+            item.className = 'countdown-item';
+            
+            const valueEl = document.createElement('div');
+            valueEl.className = 'countdown-value';
+            valueEl.textContent = value;
+            
+            const labelEl = document.createElement('div');
+            labelEl.className = 'countdown-label';
+            labelEl.textContent = label;
+            
+            item.appendChild(valueEl);
+            item.appendChild(labelEl);
+            
+            return item;
+        }
+
+        function updateCountdown() {
+            const now = new Date();
+            const difference = targetDate - now;
+
+            const answerEl = document.getElementById('answer');
+            const countdownEl = document.getElementById('countdown');
+            const celebrationEl = document.getElementById('celebration');
+
+            if (difference <= 0) {
+                // It's biefstukavond!
+                answerEl.textContent = 'JA! 🎉';
+                answerEl.className = 'answer yes';
+                countdownEl.textContent = '';
+                celebrationEl.textContent = '🥩🔥🥩🔥🥩';
+            } else {
+                // Not yet
+                answerEl.textContent = 'Nog niet...';
+                answerEl.className = 'answer no';
+                celebrationEl.textContent = '';
+
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+                // Clear and rebuild countdown using safe DOM methods
+                countdownEl.textContent = '';
+                countdownEl.appendChild(createCountdownItem(days, 'Dagen'));
+                countdownEl.appendChild(createCountdownItem(hours, 'Uren'));
+                countdownEl.appendChild(createCountdownItem(minutes, 'Minuten'));
+                countdownEl.appendChild(createCountdownItem(seconds, 'Seconden'));
+            }
+        }
+
+        // Update immediately and then every second
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
