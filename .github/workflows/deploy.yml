@@ -32,12 +32,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Setup Pages
-        uses: actions/configure-pages@v4
+        uses: actions/configure-pages@v5
+      - name: Prepare content for deployment
+        run: |
+          # Copies website files to _site directory for deployment
+          mkdir -p _site
+          cp index.html _site/
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload only the public website files
-          path: './public'
+          # Upload only the prepared _site directory
+          path: '_site'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
