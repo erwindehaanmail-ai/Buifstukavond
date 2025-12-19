@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biefstukavond Countdown</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 2rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            color: #e94560;
+        }
+
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+        }
+
+        .countdown-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px 30px;
+            min-width: 100px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .countdown-value {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #e94560;
+        }
+
+        .countdown-label {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 5px;
+            color: #a5a5a5;
+        }
+
+        .message {
+            font-size: 2rem;
+            margin-top: 2rem;
+            padding: 20px;
+            background: rgba(233, 69, 96, 0.2);
+            border-radius: 10px;
+            border: 2px solid #e94560;
+        }
+
+        .message.yes {
+            background: rgba(0, 200, 83, 0.2);
+            border-color: #00c853;
+            color: #00c853;
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .countdown-value {
+                font-size: 2rem;
+            }
+
+            .countdown-item {
+                padding: 15px 20px;
+                min-width: 80px;
+            }
+
+            .message {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Is het al biefstukavond?</h1>
+        
+        <div class="countdown" id="countdown">
+            <div class="countdown-item">
+                <div class="countdown-value" id="days">--</div>
+                <div class="countdown-label">Dagen</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="hours">--</div>
+                <div class="countdown-label">Uren</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="minutes">--</div>
+                <div class="countdown-label">Minuten</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="seconds">--</div>
+                <div class="countdown-label">Seconden</div>
+            </div>
+        </div>
+
+        <div class="message" id="message">Nog even geduld...</div>
+    </div>
+
+    <script>
+        // Target date: December 19th, 2025 at 5 PM (17:00) CET (Central European Time)
+        const targetDate = new Date('2025-12-19T17:00:00+01:00');
+
+        function updateCountdown() {
+            const now = new Date();
+            const difference = targetDate - now;
+
+            if (difference <= 0) {
+                // It's biefstukavond!
+                document.getElementById('days').textContent = '0';
+                document.getElementById('hours').textContent = '0';
+                document.getElementById('minutes').textContent = '0';
+                document.getElementById('seconds').textContent = '0';
+                
+                const message = document.getElementById('message');
+                message.innerHTML = 'JA! Het is biefstukavond! <span aria-hidden="true">🥩🎉</span>';
+                message.setAttribute('aria-label', 'JA! Het is biefstukavond!');
+                message.classList.add('yes');
+                return;
+            }
+
+            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            document.getElementById('days').textContent = days;
+            document.getElementById('hours').textContent = hours;
+            document.getElementById('minutes').textContent = minutes;
+            document.getElementById('seconds').textContent = seconds;
+
+            document.getElementById('message').textContent = 'Nog even geduld...';
+        }
+
+        // Update every second
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+    </script>
+</body>
+</html>
